@@ -1,5 +1,7 @@
 import React from "react";
 import GitHub from "@mui/icons-material/GitHub";
+
+
 function Footer() {
   return (
     <div className="flex w-full py-16 border">

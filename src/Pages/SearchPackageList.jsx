@@ -4,6 +4,8 @@ import { ContextHolder } from "../Context/ContextHolder";
 import SearchResultPackage from "../Components/SearchResultPackage";
 import Loader from "../Components/Loader";
 
+
+
 function SearchPackageList() {
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,7 +25,7 @@ function SearchPackageList() {
         baseUrl + `?text=${query}` + `&size=250`
       );
       const response = await fetchPackages.json();
-
+      console.log(response)
       searchParams.get("ranking")
         ? searchParams.get("ranking") !== "final"
           ? setPackageArray(

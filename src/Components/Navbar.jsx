@@ -3,6 +3,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import SearchIcon from "@mui/icons-material/Search";
 import { ContextHolder } from "../Context/ContextHolder";
 import { useNavigate, useSearchParams } from "react-router-dom";
+
+
 function Navbar() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();

@@ -3,16 +3,19 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import DOMPurify from "dompurify";
 import Loader from "../Components/Loader";
 import PersonIcon from "@mui/icons-material/Person";
+import { calculateTime } from "../Controller/CalculateTime";
+
+
 function PackageVersionDetails() {
   const { packageName, version } = useParams();
   const navigate = useNavigate();
   const [versions, setVersions] = useState(0)
   const [searchParams, setSearchParams] = useSearchParams();
   const [packageDets, setPackageDets] = useState({});
-  const [dataLoaded, setDataLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("readme");
   const fetchPackageDetails = async (packageName, version) => {
-    setDataLoaded(false);
+    setLoading(true);
     try {
       
       const information = await fetch(
@@ -24,40 +27,10 @@ function PackageVersionDetails() {
     } catch (error) {
       console.log(error);
     }
-    setDataLoaded(true);
+    setLoading(false);
   };
   // const sanitizedHtml = DOMPurify.sanitize(packageDets.readme);
-  const calculateTime = (date) => {
-    let todayDate = new Date();
-    let packageDate = new Date(date);
-
-    let differenceInDays = Math.floor(
-      (todayDate.getTime() - packageDate.getTime()) / (1000 * 24 * 60 * 60)
-    );
-    if (differenceInDays > 365) {
-      return `${
-        Math.floor(differenceInDays / 365) > 1
-          ? `${Math.floor(differenceInDays / 365)} years ago`
-          : "a year ago"
-      }`;
-    } else if (differenceInDays > 30) {
-      return `${
-        Math.floor(differenceInDays / 30) > 1
-          ? `${Math.floor(differenceInDays / 30)} months`
-          : "a month ago"
-      }`;
-    } else {
-      return differenceInDays > 1
-        ? `${differenceInDays} days ago`
-        : differenceInDays === 1
-        ? "a day ago"
-        : `${Math.floor(
-            (todayDate.getTime() - packageDate.getTime()) / (1000 * 60 * 60)
-          )} hours ago`;
-    }
-  };
-
-  const navigateToVersion = (version) => {
+  const navigateToAnotherVersion = (version) => {
     navigate(`${version}`);
   };
 
@@ -95,7 +68,7 @@ function PackageVersionDetails() {
   return (
 
     <div className="px-44 py-16 antialiased">
-      {dataLoaded ? (
+      {!loading ? (
         <div className="flex flex-col gap-y-4">
           <h1 className="font-source-sans-pro font-semibold text-[24px]">
             {packageDets.name}
@@ -155,7 +128,7 @@ function PackageVersionDetails() {
                   <h1>Version History</h1>
                   <div className="flex flex-col">{Object.keys(versions).toReversed().map((elem, index) => {
                     return <div className="flex justify-between">
-                      <p className="underline text-[#00000099] text-[16px] font-semibold cursor-pointer font-inconsolata" onClick={() => navigateToVersion(elem)}>{elem}</p>
+                      <p className="underline text-[#00000099] text-[16px] font-semibold cursor-pointer font-inconsolata" onClick={() => navigateToAnotherVersion(elem)}>{elem}</p>
                       <p className="text-[#00000099] text-[16px] font-inconsolata">{calculateTime(packageDets.time[`${elem}`])}</p>
                     </div>
                   })}</div>

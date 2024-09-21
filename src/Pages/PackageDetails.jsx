@@ -13,12 +13,11 @@ function PackageDetails() {
   const fetchPackageDetails = async (packageName) => {
     setDataLoaded(false);
     try {
-      
       const information = await fetch(
         ` https://registry.npmjs.org/${packageName}`
       );
       const response = await information.json();
-      
+      console.log(response);
       setPackageDets(response);
     } catch (error) {
       console.log(error);
@@ -90,7 +89,7 @@ function PackageDetails() {
                 navigateToVersion(packageDets["dist-tags"].latest)
               }
             >
-              {packageDets["dist-tags"].latest}
+              {packageDets["dist-tags"] && packageDets["dist-tags"].latest}
             </span>{" "}
             • <span className="text-[#14865c]">Public</span> • Published{" "}
             {packageDets["dist-tags"] &&
@@ -112,12 +111,12 @@ function PackageDetails() {
               Code
             </button>
             <button className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium bg-[#c836c326] border-b-2 border-[#c836c3] text-[#00000080]">
-              {
+              {packageDets.versions[`${packageDets["dist-tags"].latest}`]
+                .dependencies ?
                 Object.keys(
                   packageDets.versions[`${packageDets["dist-tags"].latest}`]
                     .dependencies
-                ).length
-              }{" "}
+                ).length : 0}{" "}
               Dependency
             </button>
             <button className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium bg-[#8956ff21] border-b-2 border-[#8956ff] text-[#8956ff]">
@@ -136,16 +135,32 @@ function PackageDetails() {
             {/* Active Tabs section will change based on the current tab */}
             <div className="w-8/12">
               {activeTab === "readme" ? (
-                <div className="w-full" dangerouslySetInnerHTML={{ __html: sanitizedHtml }}></div>
+                <div
+                  className="w-full"
+                  dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+                ></div>
               ) : (
                 <div className="w-full">
                   <h1>Version History</h1>
-                  <div className="flex flex-col">{Object.keys(packageDets.versions).toReversed().map((elem, index) => {
-                    return <div className="flex justify-between">
-                      <p className="underline text-[#00000099] text-[16px] font-semibold cursor-pointer font-inconsolata" onClick={() => navigateToVersion(elem)}>{elem}</p>
-                      <p className="text-[#00000099] text-[16px] font-inconsolata">{calculateTime(packageDets.time[`${elem}`])}</p>
-                    </div>
-                  })}</div>
+                  <div className="flex flex-col">
+                    {Object.keys(packageDets.versions)
+                      .toReversed()
+                      .map((elem, index) => {
+                        return (
+                          <div className="flex justify-between">
+                            <p
+                              className="underline text-[#00000099] text-[16px] font-semibold cursor-pointer font-inconsolata"
+                              onClick={() => navigateToVersion(elem)}
+                            >
+                              {elem}
+                            </p>
+                            <p className="text-[#00000099] text-[16px] font-inconsolata">
+                              {calculateTime(packageDets.time[`${elem}`])}
+                            </p>
+                          </div>
+                        );
+                      })}
+                  </div>
                 </div>
               )}
             </div>
