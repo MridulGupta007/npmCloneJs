@@ -6,19 +6,19 @@ import PersonIcon from "@mui/icons-material/Person";
 function PackageDetails() {
   const { packageName } = useParams();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
   const [packageDets, setPackageDets] = useState({});
   const [dataLoaded, setDataLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState("readme");
   const fetchPackageDetails = async (packageName) => {
     setDataLoaded(false);
     try {
-      console.log(` https://registry.npmjs.org/${packageName}`);
+      
       const information = await fetch(
         ` https://registry.npmjs.org/${packageName}`
       );
       const response = await information.json();
-      console.log(response);
+      
       setPackageDets(response);
     } catch (error) {
       console.log(error);
@@ -72,27 +72,32 @@ function PackageDetails() {
   }, []);
 
   useEffect(() => {
-    addParams(activeTab)
-  }, [activeTab])
+    addParams(activeTab);
+  }, [activeTab]);
 
   return (
     <div className="px-44 py-16 antialiased">
       {dataLoaded ? (
-        <div>
+        <div className="flex flex-col gap-y-4">
           <h1 className="font-source-sans-pro font-semibold text-[24px]">
             {packageDets.name}
           </h1>
           <p className="font-fira-mono text-[14px] leading-normal">
             <span
               className="cursor-pointer hover:underline"
-              onClick={() => packageDets["dist-tags"] && navigateToVersion(packageDets["dist-tags"].latest)}
+              onClick={() =>
+                packageDets["dist-tags"] &&
+                navigateToVersion(packageDets["dist-tags"].latest)
+              }
             >
               {packageDets["dist-tags"].latest}
             </span>{" "}
             • <span className="text-[#14865c]">Public</span> • Published{" "}
-            {packageDets["dist-tags"] && packageDets.time && calculateTime(
-              packageDets.time[`${packageDets["dist-tags"].latest}`]
-            )}
+            {packageDets["dist-tags"] &&
+              packageDets.time &&
+              calculateTime(
+                packageDets.time[`${packageDets["dist-tags"].latest}`]
+              )}
           </p>
 
           {/* active tabs */}
@@ -107,7 +112,13 @@ function PackageDetails() {
               Code
             </button>
             <button className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium bg-[#c836c326] border-b-2 border-[#c836c3] text-[#00000080]">
-              Dependencies
+              {
+                Object.keys(
+                  packageDets.versions[`${packageDets["dist-tags"].latest}`]
+                    .dependencies
+                ).length
+              }{" "}
+              Dependency
             </button>
             <button className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium bg-[#8956ff21] border-b-2 border-[#8956ff] text-[#8956ff]">
               Dependents
@@ -119,19 +130,28 @@ function PackageDetails() {
               {Object.keys(packageDets.versions).length} Versions
             </button>
           </div>
-          <div className="w-full flex">
-            <div className="w-8/12">
-              {/* Active Tabs section will change based on the current tab */}
-              {activeTab === "readme" ? (
-                <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }}></div>
-              ) : (
-                <div>
 
+          {/* Detail Section starts here */}
+          <div className="w-full flex justify-between gap-x-6">
+            {/* Active Tabs section will change based on the current tab */}
+            <div className="w-8/12">
+              {activeTab === "readme" ? (
+                <div className="w-full" dangerouslySetInnerHTML={{ __html: sanitizedHtml }}></div>
+              ) : (
+                <div className="w-full">
+                  <h1>Version History</h1>
+                  <div className="flex flex-col">{Object.keys(packageDets.versions).toReversed().map((elem, index) => {
+                    return <div className="flex justify-between">
+                      <p className="underline text-[#00000099] text-[16px] font-semibold cursor-pointer font-inconsolata" onClick={() => navigateToVersion(elem)}>{elem}</p>
+                      <p className="text-[#00000099] text-[16px] font-inconsolata">{calculateTime(packageDets.time[`${elem}`])}</p>
+                    </div>
+                  })}</div>
                 </div>
               )}
             </div>
+
+            {/* Stats section will remain static */}
             <div className="w-4/12 px-3">
-              {/* Stats section will remain static */}
               <div className="flex flex-col gap-y-3 py-5">
                 <span className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Install
@@ -165,7 +185,9 @@ function PackageDetails() {
                   Repository
                 </h1>
                 <p className="font-source-sans-pro text-[18px] font-semibold">
-                  {packageDets.repository ? packageDets.repository.url.split("//")[1].split(".git")[0] : '- Url not received'}
+                  {packageDets.repository
+                    ? packageDets.repository.url.split("//")[1].split(".git")[0]
+                    : "- Url not received"}
                 </p>
               </div>
               <div className="flex flex-col gap-y-1 py-5 border-b w-11/12 border-[#cccccc]">
@@ -173,7 +195,9 @@ function PackageDetails() {
                   Homepage
                 </h1>
                 <p className="font-source-sans-pro text-[18px] font-semibold">
-                  {packageDets.homepage ? packageDets.homepage.split("//")[1].split("/")[0] : '- Url not received'}
+                  {packageDets.homepage
+                    ? packageDets.homepage.split("//")[1].split("/")[0]
+                    : "- Url not received"}
                 </p>
               </div>
               <div className="flex justify-between py-5 border-b w-11/12 border-[#cccccc]">
@@ -197,16 +221,6 @@ function PackageDetails() {
                     </p>
                   </div>
                 )}
-              </div>
-              <div className="flex flex-col gap-y-1 py-5 border-b w-11/12 border-[#cccccc]">
-                <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
-                  Users
-                </h1>
-                <p className="font-source-sans-pro text-[18px] font-semibold">
-                  {packageDets.users
-                    ? Object.entries(packageDets.users).length
-                    : 0}
-                </p>
               </div>
               <div className="flex flex-col gap-y-1 py-5 border-b w-11/12 border-[#cccccc]">
                 <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">

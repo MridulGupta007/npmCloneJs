@@ -10,7 +10,8 @@ export default {
         'poppins': ['"Poppins"'],
         'fira-mono': ['"Fira Mono"'],
         'source-sans-pro': ['"Source Sans 3", "Lucida Grande", sans-serif'],
-        'arimo': ['"Arimo"']
+        'arimo': ['"Arimo"'],
+        'inconsolata': ['"inconsolata"']
       },
       lineHeight: {
         'custom': '1.15'
