@@ -139,7 +139,8 @@ function PackageDetails() {
               {activeTab === "readme" ? (
                 packageDets.readme ? (
                   <div
-                    className="w-full"
+                    className="w-full overflow-hidden"
+
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(packageDets.readme),
                     }}
