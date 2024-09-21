@@ -147,7 +147,7 @@ function PackageDetails() {
                       .toReversed()
                       .map((elem, index) => {
                         return (
-                          <div className="flex justify-between">
+                          <div className="flex justify-between" key={index}>
                             <p
                               className="underline text-[#00000099] text-[16px] font-semibold cursor-pointer font-inconsolata"
                               onClick={() => navigateToVersion(elem)}
