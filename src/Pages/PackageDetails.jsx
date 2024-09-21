@@ -24,7 +24,7 @@ function PackageDetails() {
     }
     setDataLoaded(true);
   };
-  const sanitizedHtml = DOMPurify.sanitize(packageDets.readme);
+
   const calculateTime = (date) => {
     let todayDate = new Date();
     let packageDate = new Date(date);
@@ -112,11 +112,12 @@ function PackageDetails() {
             </button>
             <button className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium bg-[#c836c326] border-b-2 border-[#c836c3] text-[#00000080]">
               {packageDets.versions[`${packageDets["dist-tags"].latest}`]
-                .dependencies ?
-                Object.keys(
-                  packageDets.versions[`${packageDets["dist-tags"].latest}`]
-                    .dependencies
-                ).length : 0}{" "}
+                .dependencies
+                ? Object.keys(
+                    packageDets.versions[`${packageDets["dist-tags"].latest}`]
+                      .dependencies
+                  ).length
+                : 0}{" "}
               Dependency
             </button>
             <button className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium bg-[#8956ff21] border-b-2 border-[#8956ff] text-[#8956ff]">
@@ -124,9 +125,10 @@ function PackageDetails() {
             </button>
             <button
               onClick={() => setActiveTab("version")}
-              className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium border-b-2 border-[#29abe2] bg-[#29abe226] text-[#29abe2]"
+              className="flex-1 py-3 rounded-sm px-10 font-fira-mono text-[14px] font-medium border-b-2 border-[#29abe2] bg-[#29abe226] text-[#29abe2]"
             >
-              {Object.keys(packageDets.versions).length} Versions
+              {packageDets.versions && Object.keys(packageDets.versions).length}{" "}
+              Versions
             </button>
           </div>
 
@@ -135,10 +137,18 @@ function PackageDetails() {
             {/* Active Tabs section will change based on the current tab */}
             <div className="w-8/12">
               {activeTab === "readme" ? (
-                <div
-                  className="w-full"
-                  dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
-                ></div>
+                packageDets.readme ? (
+                  <div
+                    className="w-full"
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(packageDets.readme),
+                    }}
+                  ></div>
+                ) : (
+                  <div>
+                    {packageDets.description && packageDets.description}
+                  </div>
+                )
               ) : (
                 <div className="w-full">
                   <h1>Version History</h1>

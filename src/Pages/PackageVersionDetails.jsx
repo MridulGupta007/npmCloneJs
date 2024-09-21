@@ -5,11 +5,10 @@ import Loader from "../Components/Loader";
 import PersonIcon from "@mui/icons-material/Person";
 import { calculateTime } from "../Controller/CalculateTime";
 
-
 function PackageVersionDetails() {
   const { packageName, version } = useParams();
   const navigate = useNavigate();
-  const [versions, setVersions] = useState(0)
+  const [versions, setVersions] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [packageDets, setPackageDets] = useState({});
   const [loading, setLoading] = useState(false);
@@ -17,7 +16,6 @@ function PackageVersionDetails() {
   const fetchPackageDetails = async (packageName, version) => {
     setLoading(true);
     try {
-      
       const information = await fetch(
         ` https://registry.npmjs.org/${packageName}/${version}`
       );
@@ -42,31 +40,31 @@ function PackageVersionDetails() {
   };
 
   useEffect(() => {
-    fetchPackageDetails(packageName, version)
-  }, [])
+    fetchPackageDetails(packageName, version);
+  }, []);
 
   useEffect(() => {
-    const fetchPackage = async(packageName) => {
-      try{
-        const packageDetail = await fetch(`https://registry.npmjs.org/${packageName}`)
-        const response = await packageDetail.json()
-        
-        const {versions} = response
-        
-        setVersions(Object.keys(versions).length)
-      }catch(error){
-        console.log(error)
-      }
+    const fetchPackage = async (packageName) => {
+      try {
+        const packageDetail = await fetch(
+          `https://registry.npmjs.org/${packageName}`
+        );
+        const response = await packageDetail.json();
 
-    }
-    fetchPackage(packageName)
-  }, [])
+        const { versions } = response;
+
+        setVersions(Object.keys(versions).length);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchPackage(packageName);
+  }, []);
   useEffect(() => {
     addParams(activeTab);
   }, [activeTab]);
 
   return (
-
     <div className="px-44 py-16 antialiased">
       {!loading ? (
         <div className="flex flex-col gap-y-4">
@@ -74,17 +72,11 @@ function PackageVersionDetails() {
             {packageDets.name}
           </h1>
           <p className="font-fira-mono text-[14px] leading-normal">
-            <span
-              className="cursor-pointer hover:underline"
-            >
-              {version}
-            </span>{" "}
-            • <span className="text-[#14865c]">Public</span> • Published{" "}
+            <span className="cursor-pointer hover:underline">{version}</span> •{" "}
+            <span className="text-[#14865c]">Public</span> • Published{" "}
             {packageDets["dist-tags"] &&
               packageDets.time &&
-              calculateTime(
-                packageDets.time[`${version}`]
-              )}
+              calculateTime(packageDets.time[`${version}`])}
           </p>
 
           {/* active tabs */}
@@ -99,11 +91,9 @@ function PackageVersionDetails() {
               Code
             </button>
             <button className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium bg-[#c836c326] border-b-2 border-[#c836c3] text-[#00000080]">
-              { packageDets.dependencies ?
-                Object.keys(
-                  packageDets.dependencies
-                ).length : 0
-              }{" "}
+              {packageDets.dependencies
+                ? Object.keys(packageDets.dependencies).length
+                : 0}{" "}
               Dependency
             </button>
             <button className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium bg-[#8956ff21] border-b-2 border-[#8956ff] text-[#8956ff]">
@@ -111,7 +101,7 @@ function PackageVersionDetails() {
             </button>
             <button
               onClick={() => setActiveTab("version")}
-              className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium border-b-2 border-[#29abe2] bg-[#29abe226] text-[#29abe2]"
+              className="flex-1 py-3 rounded-sm px-10 font-fira-mono text-[14px] font-medium border-b-2 border-[#29abe2] bg-[#29abe226] text-[#29abe2]"
             >
               {versions} Versions
             </button>
@@ -122,16 +112,40 @@ function PackageVersionDetails() {
             {/* Active Tabs section will change based on the current tab */}
             <div className="w-8/12">
               {activeTab === "readme" ? (
-                <div className="w-full" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(packageDets.readme) }}></div>
+                packageDets.readme ? (
+                  <div
+                    className="w-full"
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(packageDets.readme),
+                    }}
+                  ></div>
+                ) : (
+                  <div>
+                    {packageDets.description && packageDets.description}
+                  </div>
+                )
               ) : (
                 <div className="w-full">
                   <h1>Version History</h1>
-                  <div className="flex flex-col">{Object.keys(versions).toReversed().map((elem, index) => {
-                    return <div className="flex justify-between">
-                      <p className="underline text-[#00000099] text-[16px] font-semibold cursor-pointer font-inconsolata" onClick={() => navigateToAnotherVersion(elem)}>{elem}</p>
-                      <p className="text-[#00000099] text-[16px] font-inconsolata">{calculateTime(packageDets.time[`${elem}`])}</p>
-                    </div>
-                  })}</div>
+                  <div className="flex flex-col">
+                    {Object.keys(versions)
+                      .toReversed()
+                      .map((elem, index) => {
+                        return (
+                          <div className="flex justify-between" key={index}>
+                            <p
+                              className="underline text-[#00000099] text-[16px] font-semibold cursor-pointer font-inconsolata"
+                              onClick={() => navigateToAnotherVersion(elem)}
+                            >
+                              {elem}
+                            </p>
+                            <p className="text-[#00000099] text-[16px] font-inconsolata">
+                              {calculateTime(packageDets.time[`${elem}`])}
+                            </p>
+                          </div>
+                        );
+                      })}
+                  </div>
                 </div>
               )}
             </div>
@@ -208,7 +222,7 @@ function PackageVersionDetails() {
                   </div>
                 )}
               </div>
-              
+
               <div className="flex flex-col gap-y-1 py-5 border-b w-11/12 border-[#cccccc]">
                 <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Collaborators
