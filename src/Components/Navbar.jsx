@@ -41,7 +41,7 @@ function Navbar() {
         <div className="flex w-9/12 relative">
           <input
             type="text"
-            className="bg-[#f2f2f2] w-11/12 py-4 pl-12 outline-[1px] font-light text-[16px] leading-tight tracking-tighter font-fira-mono"
+            className="bg-[#f2f2f2] w-11/12 py-4 pl-12 outline-[1px] font-light text-[16px] leading-tight placeholder:tracking-[-0.02em] placeholder:text-[#777777] placeholder:text-[15px] tracking-tighter font-fira-mono"
             placeholder="Search Packages"
             onChange={(event) => setInput(event.target.value)}
           />
