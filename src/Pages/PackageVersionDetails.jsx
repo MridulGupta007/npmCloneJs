@@ -8,7 +8,7 @@ import { calculateTime } from "../Controller/CalculateTime";
 function PackageVersionDetails() {
   const { packageName, version } = useParams();
   const navigate = useNavigate();
-  const [versions, setVersions] = useState(0);
+  const [versions, setVersions] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [packageDets, setPackageDets] = useState({});
   const [loading, setLoading] = useState(false);
@@ -53,7 +53,7 @@ function PackageVersionDetails() {
 
         const { versions } = response;
 
-        setVersions(Object.keys(versions).length);
+        setVersions(Object.keys(versions));
       } catch (error) {
         console.log(error);
       }
@@ -103,7 +103,7 @@ function PackageVersionDetails() {
               onClick={() => setActiveTab("version")}
               className="flex-1 py-3 rounded-sm px-10 font-fira-mono text-[14px] font-medium border-b-2 border-[#29abe2] bg-[#29abe226] text-[#29abe2]"
             >
-              {versions} Versions
+              {versions.length} Versions
             </button>
           </div>
 
