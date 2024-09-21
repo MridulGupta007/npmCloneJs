@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import DOMPurify from "dompurify";
 import Loader from "../Components/Loader";
 import PersonIcon from "@mui/icons-material/Person";
 function PackageDetails() {
   const { packageName } = useParams();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams()
   const [packageDets, setPackageDets] = useState({});
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [activeTab, setActiveTab] = useState("readme");
   const fetchPackageDetails = async (packageName) => {
     setDataLoaded(false);
     try {
@@ -22,7 +25,7 @@ function PackageDetails() {
     }
     setDataLoaded(true);
   };
-
+  const sanitizedHtml = DOMPurify.sanitize(packageDets.readme);
   const calculateTime = (date) => {
     let todayDate = new Date();
     let packageDate = new Date(date);
@@ -53,13 +56,24 @@ function PackageDetails() {
     }
   };
 
-  const handleClick = (version) => {
+  const navigateToVersion = (version) => {
     navigate(`v/${version}`);
+  };
+
+  const addParams = (activeTab) => {
+    if (activeTab !== "") {
+      let new_params = { activeTab: activeTab };
+      setSearchParams(new_params);
+    }
   };
 
   useEffect(() => {
     fetchPackageDetails(packageName);
   }, []);
+
+  useEffect(() => {
+    addParams(activeTab)
+  }, [activeTab])
 
   return (
     <div className="px-44 py-16 antialiased">
@@ -71,19 +85,22 @@ function PackageDetails() {
           <p className="font-fira-mono text-[14px] leading-normal">
             <span
               className="cursor-pointer hover:underline"
-              onClick={() => handleClick(packageDets["dist-tags"].latest)}
+              onClick={() => packageDets["dist-tags"] && navigateToVersion(packageDets["dist-tags"].latest)}
             >
               {packageDets["dist-tags"].latest}
             </span>{" "}
             • <span className="text-[#14865c]">Public</span> • Published{" "}
-            {calculateTime(
+            {packageDets["dist-tags"] && packageDets.time && calculateTime(
               packageDets.time[`${packageDets["dist-tags"].latest}`]
             )}
           </p>
 
           {/* active tabs */}
           <div className="flex items-center mt-5 w-full">
-            <button className="flex-1 py-3 rounded-sm font-fira-mono text-[14px] font-medium px-16 bg-[#ffcd3a26] border-b-2 border-[#ffcd3a] text-[#ffcd3a]">
+            <button
+              onClick={() => setActiveTab("readme")}
+              className="flex-1 py-3 rounded-sm font-fira-mono text-[14px] font-medium px-16 bg-[#ffcd3a26] border-b-2 border-[#ffcd3a] text-[#ffcd3a]"
+            >
               Readme
             </button>
             <button className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium bg-[#cb383726] border-b-2 border-[#bc3433] text-[#bc3433]">
@@ -95,13 +112,23 @@ function PackageDetails() {
             <button className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium bg-[#8956ff21] border-b-2 border-[#8956ff] text-[#8956ff]">
               Dependents
             </button>
-            <button className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium border-b-2 border-[#29abe2] bg-[#29abe226] text-[#29abe2]">
+            <button
+              onClick={() => setActiveTab("version")}
+              className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium border-b-2 border-[#29abe2] bg-[#29abe226] text-[#29abe2]"
+            >
               {Object.keys(packageDets.versions).length} Versions
             </button>
           </div>
           <div className="w-full flex">
             <div className="w-8/12">
               {/* Active Tabs section will change based on the current tab */}
+              {activeTab === "readme" ? (
+                <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }}></div>
+              ) : (
+                <div>
+
+                </div>
+              )}
             </div>
             <div className="w-4/12 px-3">
               {/* Stats section will remain static */}
@@ -138,14 +165,16 @@ function PackageDetails() {
                   Repository
                 </h1>
                 <p className="font-source-sans-pro text-[18px] font-semibold">
-                  {packageDets.repository.url.split("//")[1].split(".git")[0]}
+                  {packageDets.repository ? packageDets.repository.url.split("//")[1].split(".git")[0] : '- Url not received'}
                 </p>
               </div>
               <div className="flex flex-col gap-y-1 py-5 border-b w-11/12 border-[#cccccc]">
                 <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Homepage
                 </h1>
-                <p className="font-source-sans-pro text-[18px] font-semibold">{packageDets.homepage.split("//")[1].split("/")[0]}</p>
+                <p className="font-source-sans-pro text-[18px] font-semibold">
+                  {packageDets.homepage ? packageDets.homepage.split("//")[1].split("/")[0] : '- Url not received'}
+                </p>
               </div>
               <div className="flex justify-between py-5 border-b w-11/12 border-[#cccccc]">
                 {packageDets["dist-tags"] && (
@@ -153,7 +182,9 @@ function PackageDetails() {
                     <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                       Version
                     </h1>
-                    <p className="font-source-sans-pro text-[18px] font-semibold">{packageDets["dist-tags"].latest}</p>
+                    <p className="font-source-sans-pro text-[18px] font-semibold">
+                      {packageDets["dist-tags"].latest}
+                    </p>
                   </div>
                 )}
                 {packageDets.license && (
@@ -161,7 +192,9 @@ function PackageDetails() {
                     <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                       License
                     </h1>
-                    <p className="font-source-sans-pro text-[18px] font-semibold">{packageDets.license}</p>
+                    <p className="font-source-sans-pro text-[18px] font-semibold">
+                      {packageDets.license}
+                    </p>
                   </div>
                 )}
               </div>
@@ -170,15 +203,16 @@ function PackageDetails() {
                   Users
                 </h1>
                 <p className="font-source-sans-pro text-[18px] font-semibold">
-                  {packageDets.users &&
-                    Object.entries(packageDets.users).length}
+                  {packageDets.users
+                    ? Object.entries(packageDets.users).length
+                    : 0}
                 </p>
               </div>
               <div className="flex flex-col gap-y-1 py-5 border-b w-11/12 border-[#cccccc]">
                 <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Collaborators
                 </h1>
-                <div className="flex gap-x-2">
+                <div className="flex gap-x-2 flex-wrap">
                   {packageDets.maintainers &&
                     packageDets.maintainers.length > 0 &&
                     packageDets.maintainers.map((elem, index) => {

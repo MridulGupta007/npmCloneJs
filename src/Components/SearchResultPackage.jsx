@@ -46,7 +46,7 @@ function SearchResultPackage({ elem }) {
         <p className="text-[16px] text-[#00000099]">
           {elem.package.description}
         </p>
-        <div className="flex gap-x-2">
+        <div className="flex flex-wrap gap-2">
           {elem.package.keywords &&
             elem.package.keywords.length > 0 &&
             elem.package.keywords.map((elem, index) => {
