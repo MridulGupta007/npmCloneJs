@@ -21,7 +21,7 @@ function App() {
         <Footer />
         <div className="h-[12px] bg-gradient-to-br from-[#fb8817] via-[#e63a11] to-[#e02aff]"></div>
       </div>
-      {/* <HomeLayout /> */}
+
     </ContextHolder.Provider>
   );
 }

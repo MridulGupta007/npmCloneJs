@@ -4,8 +4,8 @@ import GitHub from "@mui/icons-material/GitHub";
 
 function Footer() {
   return (
-    <div className="flex w-full py-16 border">
-      <div className="px-12 flex flex-col gap-y-7">
+    <div className="flex flex-col gap-y-10 sm:flex-row w-full py-16 border">
+      <div className="px-9 sm:px-12 flex flex-col gap-y-7">
         <svg viewBox="0 0 27.23 27.23" aria-hidden="true" className="w-12">
           <rect fill="#333333" width="27.23" height="27.23" rx="2"></rect>
           <polygon
@@ -16,7 +16,7 @@ function Footer() {
 
         <GitHub sx={{ fontSize: 50 }} />
       </div>
-      <div className="flex justify-between flex-wrap w-full px-10">
+      <div className="flex flex-col gap-y-10 sm:flex-row sm:justify-between sm:flex-wrap w-full px-10">
         <FooterSection
           heading="Support"
           links={["Help", "Advisories", "Status", "Contact npm"]}
@@ -35,11 +35,11 @@ export default Footer;
 
 const FooterSection = ({ heading, links }) => {
   return (
-    <div className="flex-1 flex flex-col gap-y-7 items-start">
-      <h1 className="text-[17px] font-poppins font-bold tracking-[1.3px]">{heading}</h1>
-      <div className="flex flex-col gap-y-5">
+    <div className="flex-1 flex flex-col gap-y-5 sm:gap-y-7 items-start">
+      <h1 className="text-[15px] sm:text-[17px] font-poppins font-bold tracking-[1.3px]">{heading}</h1>
+      <div className="flex flex-col gap-y-3 sm:gap-y-5">
         {links.map((elem, index) => {
-          return <p key={index} className="font-poppins leading-8 text-[16px]">{elem}</p>;
+          return <p key={index} className="font-poppins leading-8 text-[14px] sm:text-[16px]">{elem}</p>;
         })}
       </div>
     </div>

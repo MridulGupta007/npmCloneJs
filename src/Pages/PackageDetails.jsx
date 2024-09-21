@@ -17,7 +17,7 @@ function PackageDetails() {
         ` https://registry.npmjs.org/${packageName}`
       );
       const response = await information.json();
-      console.log(response);
+     
       setPackageDets(response);
     } catch (error) {
       console.log(error);
@@ -75,13 +75,13 @@ function PackageDetails() {
   }, [activeTab]);
 
   return (
-    <div className="px-44 py-16 antialiased">
+    <div className="sm:px-44 py-5 sm:py-16 antialiased">
       {dataLoaded ? (
-        <div className="flex flex-col gap-y-4">
-          <h1 className="font-source-sans-pro font-semibold text-[24px]">
+        <div className="flex flex-col gap-y-2 sm:gap-y-4">
+          <h1 className="font-source-sans-pro px-5 sm:px-0 font-semibold text-[24px]">
             {packageDets.name}
           </h1>
-          <p className="font-fira-mono text-[14px] leading-normal">
+          <p className="font-fira-mono text-[14px] px-5 sm:px-0 leading-normal">
             <span
               className="cursor-pointer hover:underline"
               onClick={() =>
@@ -100,7 +100,7 @@ function PackageDetails() {
           </p>
 
           {/* active tabs */}
-          <div className="flex items-center mt-5 w-full">
+          <div className="flex flex-col sm:flex-row px-3 sm:px-0 gap-y-1 sm:items-center sm:mt-5 w-full">
             <button
               onClick={() => setActiveTab("readme")}
               className="flex-1 py-3 rounded-sm font-fira-mono text-[14px] font-medium px-16 bg-[#ffcd3a26] border-b-2 border-[#ffcd3a] text-[#ffcd3a]"
@@ -133,9 +133,9 @@ function PackageDetails() {
           </div>
 
           {/* Detail Section starts here */}
-          <div className="w-full flex justify-between gap-x-6">
+          <div className="w-full flex flex-col sm:flex-row sm:justify-between gap-x-6">
             {/* Active Tabs section will change based on the current tab */}
-            <div className="w-8/12">
+            <div className="w-full px-3 sm:px-0 sm:w-8/12">
               {activeTab === "readme" ? (
                 packageDets.readme ? (
                   <div
@@ -146,13 +146,13 @@ function PackageDetails() {
                   ></div>
                 ) : (
                   <div>
-                    {packageDets.description && packageDets.description}
+                    {packageDets.description && packageDets.description} {'(no addtional readme given)'}
                   </div>
                 )
               ) : (
                 <div className="w-full">
                   <h1>Version History</h1>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col w-full">
                     {Object.keys(packageDets.versions)
                       .toReversed()
                       .map((elem, index) => {
@@ -164,6 +164,8 @@ function PackageDetails() {
                             >
                               {elem}
                             </p>
+                            
+                            
                             <p className="text-[#00000099] text-[16px] font-inconsolata">
                               {calculateTime(packageDets.time[`${elem}`])}
                             </p>
@@ -176,12 +178,12 @@ function PackageDetails() {
             </div>
 
             {/* Stats section will remain static */}
-            <div className="w-4/12 px-3">
+            <div className="w-full px-3 sm:w-4/12">
               <div className="flex flex-col gap-y-3 py-5">
                 <span className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Install
                 </span>
-                <div className="border flex border-[#cccccc] w-11/12 px-3 py-3 font-fira-mono text-[14px] rounded-md">
+                <div className="border flex border-[#cccccc] w-full sm:w-11/12 px-3 py-3 font-fira-mono text-[14px] rounded-md">
                   <svg
                     viewBox="0 0 12.32 9.33"
                     aria-hidden="true"
@@ -189,7 +191,7 @@ function PackageDetails() {
                   >
                     <g>
                       <line
-                        class="st1"
+                        className="st1"
                         x1="7.6"
                         y1="8.9"
                         x2="7.6"
@@ -205,7 +207,7 @@ function PackageDetails() {
                   npm i {packageDets.name}
                 </div>
               </div>
-              <div className="flex flex-col gap-y-1 py-5 border-b w-11/12 border-[#cccccc]">
+              <div className="flex flex-col gap-y-1 py-5 border-b w-full sm:w-11/12 border-[#cccccc]">
                 <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Repository
                 </h1>
@@ -215,7 +217,7 @@ function PackageDetails() {
                     : "- Url not received"}
                 </p>
               </div>
-              <div className="flex flex-col gap-y-1 py-5 border-b w-11/12 border-[#cccccc]">
+              <div className="flex flex-col gap-y-1 py-5 border-b w-full sm:w-11/12 border-[#cccccc]">
                 <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Homepage
                 </h1>
@@ -225,7 +227,7 @@ function PackageDetails() {
                     : "- Url not received"}
                 </p>
               </div>
-              <div className="flex justify-between py-5 border-b w-11/12 border-[#cccccc]">
+              <div className="flex justify-between py-5 border-b w-full sm:w-11/12 border-[#cccccc]">
                 {packageDets["dist-tags"] && (
                   <div className="flex-1 flex flex-col gap-y-1">
                     <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
@@ -247,7 +249,7 @@ function PackageDetails() {
                   </div>
                 )}
               </div>
-              <div className="flex flex-col gap-y-1 py-5 border-b w-11/12 border-[#cccccc]">
+              <div className="flex flex-col gap-y-1 py-5 w-full sm:w-11/12">
                 <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Collaborators
                 </h1>

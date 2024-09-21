@@ -4,8 +4,6 @@ import { ContextHolder } from "../Context/ContextHolder";
 import SearchResultPackage from "../Components/SearchResultPackage";
 import Loader from "../Components/Loader";
 
-
-
 function SearchPackageList() {
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -25,7 +23,7 @@ function SearchPackageList() {
         baseUrl + `?text=${query}` + `&size=250`
       );
       const response = await fetchPackages.json();
-      console.log(response)
+
       searchParams.get("ranking")
         ? searchParams.get("ranking") !== "final"
           ? setPackageArray(
@@ -126,16 +124,16 @@ function SearchPackageList() {
         <Loader />
       ) : (
         <>
-          <div className="border font-source-sans-pro font-semibold text-[20px] flex items-center justify-between px-8 py-7 bg-[#f9f9f9]">
+          <div className="border font-source-sans-pro font-semibold text-[16px] sm:text-[20px] flex flex-col items-start sm:flex-row sm:items-center justify-between px-6 sm:px-8 py-5 sm:py-7 bg-[#f9f9f9]">
             {packageArray.length} packages found
             {/* Pagination Controls */}
-            <div className="flex justify-center mt-4">
+            <div className="flex flex-wrap justify-start gap-y-1 sm:justify-center mt-4">
               {getPageNumbers().map((page, index) =>
                 typeof page === "number" ? (
                   <button
                     key={index}
                     onClick={() => goToPage(page)}
-                    className={`font-source-sans-pro text-[18px] border-2 border-[#cfcfcf] bg-white px-4 py-2 mx-1 rounded ${
+                    className={`font-source-sans-pro sm:text-[18px] border-2 border-[#cfcfcf] bg-white px-3 sm:px-4 py-1 sm:py-2 mx-1 rounded ${
                       page === currentPage
                         ? "text-black font-bold"
                         : "text-[#666666]"
@@ -144,15 +142,15 @@ function SearchPackageList() {
                     {page}
                   </button>
                 ) : (
-                  <span key={index} className="px-4 py-2 mx-1">
+                  <span key={index} className="px-3 sm:px-4 py-1 sm:py-2 mx-1">
                     ...
                   </span>
                 )
               )}
             </div>
           </div>
-          <div className="flex overflow-hidden">
-            <div className="font-source-sans-pro font-semibold flex flex-col pl-8 pr-10 w-1/3 gap-y-2">
+          <div className="flex flex-col sm:flex-row overflow-hidden">
+            <div className="font-source-sans-pro font-semibold flex flex-col pl-8 pr-10 w-full sm:w-1/3 gap-y-2">
               <h1>Sort Packages</h1>
               <form className="text-[#000000b3] flex flex-col gap-y-2">
                 {/* Sorting Method Radio Buttons */}
@@ -227,30 +225,32 @@ function SearchPackageList() {
                 currentPackages.map((elem, index) => {
                   return <SearchResultPackage elem={elem} key={index} />;
                 })}
-                            {/* Pagination Controls */}
-            <div className="flex justify-start py-4">
-              {getPageNumbers().map((page, index) =>
-                typeof page === "number" ? (
-                  <button
-                    key={index}
-                    onClick={() => goToPage(page)}
-                    className={`font-source-sans-pro text-[18px] border-2 border-[#cfcfcf] bg-white px-4 py-2 mx-1 rounded ${
-                      page === currentPage
-                        ? "text-black font-bold"
-                        : "text-[#666666]"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ) : (
-                  <span key={index} className="px-4 py-2 mx-1">
-                    ...
-                  </span>
-                )
-              )}
+              {/* Pagination Controls */}
+              <div className="flex flex-wrap justify-start mx-3 sm:mx-0 gap-y-1 sm:justify-center my-4">
+                {getPageNumbers().map((page, index) =>
+                  typeof page === "number" ? (
+                    <button
+                      key={index}
+                      onClick={() => goToPage(page)}
+                      className={`font-source-sans-pro sm:text-[18px] border-2 border-[#cfcfcf] bg-white px-3 sm:px-4 py-1 sm:py-2 mx-1 rounded ${
+                        page === currentPage
+                          ? "text-black font-bold"
+                          : "text-[#666666]"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ) : (
+                    <span
+                      key={index}
+                      className="sm:px-4 py-1 sm:py-2 mx-1"
+                    >
+                      ...
+                    </span>
+                  )
+                )}
+              </div>
             </div>
-            </div>
-
           </div>
         </>
       )}

@@ -9,6 +9,7 @@ function PackageVersionDetails() {
   const { packageName, version } = useParams();
   const navigate = useNavigate();
   const [versions, setVersions] = useState([]);
+  const [time, setTime] = useState({})
   const [searchParams, setSearchParams] = useSearchParams();
   const [packageDets, setPackageDets] = useState({});
   const [loading, setLoading] = useState(false);
@@ -20,16 +21,16 @@ function PackageVersionDetails() {
         ` https://registry.npmjs.org/${packageName}/${version}`
       );
       const response = await information.json();
-      console.log(response);
+ 
       setPackageDets(response);
     } catch (error) {
       console.log(error);
     }
     setLoading(false);
   };
-  // const sanitizedHtml = DOMPurify.sanitize(packageDets.readme);
+
   const navigateToAnotherVersion = (version) => {
-    navigate(`${version}`);
+
   };
 
   const addParams = (activeTab) => {
@@ -41,7 +42,7 @@ function PackageVersionDetails() {
 
   useEffect(() => {
     fetchPackageDetails(packageName, version);
-  }, []);
+  }, [version]);
 
   useEffect(() => {
     const fetchPackage = async (packageName) => {
@@ -51,27 +52,28 @@ function PackageVersionDetails() {
         );
         const response = await packageDetail.json();
 
-        const { versions } = response;
-
+        const { versions, time } = response;
+        
+        setTime(time)
         setVersions(Object.keys(versions));
       } catch (error) {
         console.log(error);
       }
     };
     fetchPackage(packageName);
-  }, []);
+  }, [version]);
   useEffect(() => {
     addParams(activeTab);
   }, [activeTab]);
 
   return (
-    <div className="px-44 py-16 antialiased">
+    <div className="sm:px-44 py-5 sm:py-16 antialiased">
       {!loading ? (
-        <div className="flex flex-col gap-y-4">
-          <h1 className="font-source-sans-pro font-semibold text-[24px]">
+        <div className="flex flex-col gap-y-2 sm:gap-y-4">
+          <h1 className="font-source-sans-pro px-5 sm:px-0 font-semibold text-[24px]">
             {packageDets.name}
           </h1>
-          <p className="font-fira-mono text-[14px] leading-normal">
+          <p className="font-fira-mono text-[14px] px-5 sm:px-0 leading-normal">
             <span className="cursor-pointer hover:underline">{version}</span> •{" "}
             <span className="text-[#14865c]">Public</span> • Published{" "}
             {packageDets["dist-tags"] &&
@@ -80,7 +82,7 @@ function PackageVersionDetails() {
           </p>
 
           {/* active tabs */}
-          <div className="flex items-center mt-5 w-full">
+          <div className="flex flex-col sm:flex-row px-3 sm:px-0 gap-y-1 sm:items-center sm:mt-5 w-full">
             <button
               onClick={() => setActiveTab("readme")}
               className="flex-1 py-3 rounded-sm font-fira-mono text-[14px] font-medium px-16 bg-[#ffcd3a26] border-b-2 border-[#ffcd3a] text-[#ffcd3a]"
@@ -108,9 +110,9 @@ function PackageVersionDetails() {
           </div>
 
           {/* Detail Section starts here */}
-          <div className="w-full flex justify-between gap-x-6">
+          <div className="w-full flex flex-col sm:flex-row sm:justify-between gap-x-6">
             {/* Active Tabs section will change based on the current tab */}
-            <div className="w-8/12">
+            <div className="w-full px-3 sm:px-0 sm:w-8/12">
               {activeTab === "readme" ? (
                 packageDets.readme ? (
                   <div
@@ -121,14 +123,14 @@ function PackageVersionDetails() {
                   ></div>
                 ) : (
                   <div>
-                    {packageDets.description && packageDets.description}
+                    {packageDets.description && packageDets.description} {'(no addtional readme given)'}
                   </div>
                 )
               ) : (
                 <div className="w-full">
                   <h1>Version History</h1>
-                  <div className="flex flex-col">
-                    {Object.keys(versions)
+                  <div className="flex flex-col w-full">
+                    {versions
                       .toReversed()
                       .map((elem, index) => {
                         return (
@@ -140,7 +142,7 @@ function PackageVersionDetails() {
                               {elem}
                             </p>
                             <p className="text-[#00000099] text-[16px] font-inconsolata">
-                              {calculateTime(packageDets.time[`${elem}`])}
+                              {calculateTime(time[`${elem}`])}
                             </p>
                           </div>
                         );
@@ -151,12 +153,12 @@ function PackageVersionDetails() {
             </div>
 
             {/* Stats section will remain static */}
-            <div className="w-4/12 px-3">
+            <div className="w-full px-3 sm:w-4/12">
               <div className="flex flex-col gap-y-3 py-5">
                 <span className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Install
                 </span>
-                <div className="border flex border-[#cccccc] w-11/12 px-3 py-3 font-fira-mono text-[14px] rounded-md">
+                <div className="border flex border-[#cccccc] w-full sm:w-11/12 px-3 py-3 font-fira-mono text-[14px] rounded-md">
                   <svg
                     viewBox="0 0 12.32 9.33"
                     aria-hidden="true"
@@ -164,7 +166,7 @@ function PackageVersionDetails() {
                   >
                     <g>
                       <line
-                        class="st1"
+                        className="st1"
                         x1="7.6"
                         y1="8.9"
                         x2="7.6"
@@ -180,7 +182,7 @@ function PackageVersionDetails() {
                   npm i {packageName}@{version}
                 </div>
               </div>
-              <div className="flex flex-col gap-y-1 py-5 border-b w-11/12 border-[#cccccc]">
+              <div className="flex flex-col gap-y-1 py-5 border-b w-full sm:w-11/12 border-[#cccccc]">
                 <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Repository
                 </h1>
@@ -200,7 +202,7 @@ function PackageVersionDetails() {
                     : "- Url not received"}
                 </p>
               </div>
-              <div className="flex justify-between py-5 border-b w-11/12 border-[#cccccc]">
+              <div className="flex justify-between py-5 border-b w-full sm:w-11/12 border-[#cccccc]">
                 {packageDets.version && (
                   <div className="flex-1 flex flex-col gap-y-1">
                     <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
@@ -223,7 +225,7 @@ function PackageVersionDetails() {
                 )}
               </div>
 
-              <div className="flex flex-col gap-y-1 py-5 border-b w-11/12 border-[#cccccc]">
+              <div className="flex flex-col gap-y-1 py-5 w-full sm:w-11/12">
                 <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Collaborators
                 </h1>
