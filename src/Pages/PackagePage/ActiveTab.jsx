@@ -1,6 +1,8 @@
 import DOMPurify from "dompurify";
 import { calculateTime } from '../../Controller/CalculateTime'
+import { useNavigate } from "react-router-dom";
 const ActiveTab = ({ activeTab, packageDets }) => {
+  const navigate = useNavigate()
   const navigateToVersion = (version) => {
     navigate(`v/${version}`);
   };
