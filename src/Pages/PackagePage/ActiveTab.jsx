@@ -1,6 +1,9 @@
 import DOMPurify from "dompurify";
 import { calculateTime } from '../../Controller/CalculateTime'
 const ActiveTab = ({ activeTab, packageDets }) => {
+  const navigateToVersion = (version) => {
+    navigate(`v/${version}`);
+  };
   return (
     <div className="w-full px-3 sm:px-0 sm:w-8/12">
       {activeTab === "readme" ? (
