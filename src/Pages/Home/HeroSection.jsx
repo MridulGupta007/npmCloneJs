@@ -16,7 +16,7 @@ const HeroSection = () => {
         Get started today for free, or step up to npm Pro to enjoy a premium
         JavaScript development experience, with features like private packages.
       </p>
-      <div className="font-poppins font-bold text-[13px] sm:text-[16px] px-2 sm:px-0 sm:self-center flex flex-col gap-y-3 sm:gap-y-0 sm:flex-row sm:gap-x-10 py-7 sm:py-10">
+      <div className="font-poppins font-bold text-[13px] sm:text-[16px] px-6 sm:px-0 sm:self-center flex flex-col gap-y-3 sm:gap-y-0 sm:flex-row sm:gap-x-10 py-7 sm:py-10">
         <button className="bg-[#ffc329] shadow-xl rounded-full py-3 sm:py-4 px-10 sm:px-12 text-black">
           Sign up for free
         </button>
