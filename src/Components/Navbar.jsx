@@ -79,6 +79,7 @@ function Navbar() {
             onClick={() => {
               navigate("/search");
               addParams(input);
+              setLoading(true)
               setChangedQuery(input);
             }}
           >

@@ -12,6 +12,7 @@ import SearchPackageList from "./Pages/SearchPackages/SearchPackageList.jsx";
 import PackageDetails from "./Pages/PackagePage/PackageDetails.jsx";
 import HomeLayout from "./Pages/Home/HomeLayout.jsx";
 import PackageVersionDetails from "./Pages/PackageVersionPage/PackageVersionDetails.jsx";
+import PackageInParts from "./Pages/PackagePage/PackageInParts.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<HomeLayout />} />
       <Route path="/search" element={<SearchPackageList />} />
       <Route path="/package/:packageName" element={<PackageDetails />} />
+      <Route path="/package/:partOne/:partTwo" element={<PackageInParts />} />
       <Route
         path="package/:packageName/v/:version"
         element={<PackageVersionDetails />}

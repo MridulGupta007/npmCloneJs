@@ -7,7 +7,7 @@ function SearchResultPackage({ elem }) {
 
   // function to navigate dynamically to specific package page
   const navigateToPackage = (name) => {
-    navigate(`/package/${name}`);
+    name.includes('/') ? navigate(`/package/${name.split('/')[0]}/${name.split('/')[1]}`) : navigate(`/package/${name}`);
   };
 
   return (
