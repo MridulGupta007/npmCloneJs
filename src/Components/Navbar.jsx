@@ -50,7 +50,7 @@ function Navbar() {
         <p>Pricing</p>
         <p>Documentation</p>
       </div>
-      <div className="flex justify-between sm:justify-normal gap-x-3 sm:gap-x-6 border-b py-3 sm:py-5 px-4 sm:px-10">
+      <div className="flex justify-between sm:justify-normal flex-wrap md:flex-nowrap gap-x-3 sm:gap-y-3 sm:gap-x-6 border-b py-3 sm:py-5 px-4 sm:px-10">
         <svg
           viewBox="0 0 780 250"
           aria-hidden="true"
