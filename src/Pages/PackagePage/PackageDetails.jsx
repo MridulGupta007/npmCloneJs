@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import Loader from "../../Components/Loader";
 import ActiveTab from "./ActiveTab";
 import StatsSection from "./StatsSection";
 import { calculateTime } from "../../Controller/CalculateTime";
+import { ContextHolder } from "../../Context/ContextHolder";
 function PackageDetails() {
   const { packageName } = useParams();
   const navigate = useNavigate();
@@ -34,6 +35,9 @@ function PackageDetails() {
     setDataLoaded(true);
   };
 
+  const contextHolder = useContext(ContextHolder)
+  const {changePackageName} = contextHolder
+
   // navigate to a specific package version
   const navigateToVersion = (version) => {
     navigate(`v/${version}`);
@@ -50,7 +54,7 @@ function PackageDetails() {
   // fetching the package details on first render
   useEffect(() => {
     fetchPackageDetails(packageName);
-  }, []);
+  }, [changePackageName]);
 
 
   // adding and updating params on every tab switch

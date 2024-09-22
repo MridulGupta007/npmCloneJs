@@ -12,9 +12,10 @@ function App() {
   // tracks the change in Search Query term upon hitting search button
   const [changedQuery, setChangedQuery] = useState("");
 
+  const [changePackageName, setChangePackageName] = useState('')
   return (
     <ContextHolder.Provider
-      value={{ changedQuery, input, setInput, setChangedQuery }}
+      value={{ changedQuery, input, setInput, setChangedQuery, changePackageName, setChangePackageName }}
     >
       <div className="font-poppins antialiased">
         <div className="h-[12px] bg-gradient-to-br from-[#fb8817] via-[#e63a11] to-[#e02aff]"></div>
