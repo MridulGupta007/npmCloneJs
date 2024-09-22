@@ -9,7 +9,11 @@ function Navbar() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const contextHolder = useContext(ContextHolder);
+
+  // input is used to change params, setInput is used to change input value on every change, setChangedQuery keeps track of search term
   const { input, setInput, setChangedQuery } = contextHolder;
+  
+  // function to add or update query param in URL
   const addParams = (query) => {
     if (query != "") {
       let params = { q: query };

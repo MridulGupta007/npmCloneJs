@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { ContextHolder } from "./Context/ContextHolder";
 import Navbar from "./Components/Navbar";
-
 import Footer from "./Components/Footer";
-import HomeLayout from "./Pages//Home/HomeLayout";
+
 function App() {
+
+  // Keeps a live track of input value
   const [input, setInput] = useState("");
 
+  // tracks the change in Search Query term upon hitting search button
   const [changedQuery, setChangedQuery] = useState("");
 
   return (

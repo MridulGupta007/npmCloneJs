@@ -2,6 +2,7 @@ import PersonIcon from "@mui/icons-material/Person";
 
 const StatsSection = ({ packageDets }) => {
   return (
+    
     <div className="w-full px-3 sm:w-4/12">
       <div className="flex flex-col gap-y-3 py-5">
         <span className="text-[16px] font-source-sans-pro font-bold text-[#757575]">

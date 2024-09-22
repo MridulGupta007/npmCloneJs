@@ -2,7 +2,10 @@ import DOMPurify from "dompurify";
 import { calculateTime } from '../../Controller/CalculateTime'
 import { useNavigate } from "react-router-dom";
 const ActiveTab = ({ activeTab, packageDets }) => {
+
   const navigate = useNavigate()
+
+  // function to navigate to a specific version page
   const navigateToVersion = (version) => {
     navigate(`v/${version}`);
   };
@@ -18,6 +21,7 @@ const ActiveTab = ({ activeTab, packageDets }) => {
           ></div>
         ) : (
           <div>
+            {/* if no readme provided, display description */}
             {packageDets.description && packageDets.description}{" "}
             {"(no addtional readme given)"}
           </div>

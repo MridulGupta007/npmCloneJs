@@ -5,17 +5,35 @@ import SearchResultPackage from "./SearchResultPackage";
 import Loader from "../../Components/Loader";
 
 function SearchPackageList() {
-  const [loading, setLoading] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [sortingMethod, setSortingMethod] = useState("");
-  const [packageArray, setPackageArray] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1); // State for current page
-  const itemsPerPage = 20; // Display 20 packages per page
 
+  // simulate loading while fetching data
+  const [loading, setLoading] = useState(false);
+
+  // set url search params for sorting
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // keeps track of method based on which, package Array is sorted
+  const [sortingMethod, setSortingMethod] = useState("");
+
+  // Stores an array of incoming packages based on Search query
+  const [packageArray, setPackageArray] = useState([]);
+
+  // State for current page
+  const [currentPage, setCurrentPage] = useState(1); 
+  
+  // Display 20 packages per page
+  const itemsPerPage = 20; 
+
+  // using context to track changes in query from App.jsx + Navbar.jsx
   const contextHolder = useContext(ContextHolder);
+
+  // extract Query state
   const { changedQuery } = contextHolder;
+
+  // API baseUrl
   const baseUrl = "https://registry.npmjs.org/-/v1/search";
 
+  // fetching data from API endpoint
   const searchPackage = async (query) => {
     setLoading(true);
     try {
@@ -24,6 +42,7 @@ function SearchPackageList() {
       );
       const response = await fetchPackages.json();
 
+      // every time page reloads, check for sorting methods in URL params, if present, sort the data and store it
       searchParams.get("ranking")
         ? searchParams.get("ranking") !== "final"
           ? setPackageArray(
@@ -47,6 +66,7 @@ function SearchPackageList() {
     setLoading(false);
   };
 
+  // function to add sorting params to the URL
   const addParams = (sortingMethod) => {
     if (sortingMethod !== "") {
       let new_params = { q: searchParams.get("q"), ranking: sortingMethod };
@@ -54,6 +74,8 @@ function SearchPackageList() {
     }
   };
 
+
+  // sorting function for first load and subsequent changes
   const new_sort = (sortingMethod) => {
     sortingMethod !== "final"
       ? setPackageArray((prev) =>
@@ -70,10 +92,12 @@ function SearchPackageList() {
         );
   };
 
+  // Fetch data from API endpoint whenever search query changes
   useEffect(() => {
     searchPackage(searchParams.get("q"));
   }, [changedQuery]);
 
+  // whenever user changes sorting method, re-arrange the data, and also update the URL params
   useEffect(() => {
     new_sort(sortingMethod);
     addParams(sortingMethod);
@@ -220,11 +244,13 @@ function SearchPackageList() {
               </form>
             </div>
 
+              {/* Package List rendered below */}
             <div>
               {currentPackages.length > 0 &&
                 currentPackages.map((elem, index) => {
                   return <SearchResultPackage elem={elem} key={index} />;
                 })}
+                
               {/* Pagination Controls */}
               <div className="flex flex-wrap justify-start mx-3 sm:mx-0 gap-y-1 sm:justify-center my-4">
                 {getPageNumbers().map((page, index) =>

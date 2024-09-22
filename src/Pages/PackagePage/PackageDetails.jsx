@@ -8,9 +8,17 @@ function PackageDetails() {
   const { packageName } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  // stores an object with details about the specific package
   const [packageDets, setPackageDets] = useState({});
+
+  // tracks loading status
   const [dataLoaded, setDataLoaded] = useState(false);
+
+  // active tab status => README tab or VERSION tab
   const [activeTab, setActiveTab] = useState("readme");
+
+  // fetches package specific data from API endpoint
   const fetchPackageDetails = async (packageName) => {
     setDataLoaded(false);
     try {
@@ -26,10 +34,12 @@ function PackageDetails() {
     setDataLoaded(true);
   };
 
+  // navigate to a specific package version
   const navigateToVersion = (version) => {
     navigate(`v/${version}`);
   };
 
+  // add url params for active tab status
   const addParams = (activeTab) => {
     if (activeTab !== "") {
       let new_params = { activeTab: activeTab };
@@ -37,10 +47,13 @@ function PackageDetails() {
     }
   };
 
+  // fetching the package details on first render
   useEffect(() => {
     fetchPackageDetails(packageName);
   }, []);
 
+
+  // adding and updating params on every tab switch
   useEffect(() => {
     addParams(activeTab);
   }, [activeTab]);

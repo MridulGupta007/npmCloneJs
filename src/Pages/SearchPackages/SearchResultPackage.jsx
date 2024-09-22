@@ -4,6 +4,8 @@ import { calculateTime } from "../../Controller/CalculateTime";
 
 function SearchResultPackage({ elem }) {
   const navigate = useNavigate();
+
+  // function to navigate dynamically to specific package page
   const navigateToPackage = (name) => {
     navigate(`/package/${name}`);
   };
