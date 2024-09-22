@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { calculateTime } from "../Controller/CalculateTime";
+import { calculateTime } from "../../Controller/CalculateTime";
 
 function SearchResultPackage({ elem }) {
   const navigate = useNavigate();

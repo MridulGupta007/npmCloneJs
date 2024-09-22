@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ContextHolder } from "../Context/ContextHolder";
-import SearchResultPackage from "../Components/SearchResultPackage";
-import Loader from "../Components/Loader";
+import { ContextHolder } from "../../Context/ContextHolder";
+import SearchResultPackage from "./SearchResultPackage";
+import Loader from "../../Components/Loader";
 
 function SearchPackageList() {
   const [loading, setLoading] = useState(false);

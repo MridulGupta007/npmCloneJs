@@ -8,10 +8,10 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import SearchPackageList from "./Pages/SearchPackageList.jsx";
-import PackageDetails from "./Pages/PackageDetails.jsx";
-import HomeLayout from "./Pages/HomeLayout.jsx";
-import PackageVersionDetails from "./Pages/PackageVersionDetails.jsx";
+import SearchPackageList from "./Pages/SearchPackages/SearchPackageList.jsx";
+import PackageDetails from "./Pages/PackagePage/PackageDetails.jsx";
+import HomeLayout from "./Pages/Home/HomeLayout.jsx";
+import PackageVersionDetails from "./Pages/PackageVersionPage/PackageVersionDetails.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(

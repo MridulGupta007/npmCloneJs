@@ -1,62 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import DOMPurify from "dompurify";
-import Loader from "../Components/Loader";
+import Loader from "../../Components/Loader";
 import PersonIcon from "@mui/icons-material/Person";
-function PackageDetails() {
-  const { packageName } = useParams();
+import { calculateTime } from "../../Controller/CalculateTime";
+
+function PackageVersionDetails() {
+  const { packageName, version } = useParams();
   const navigate = useNavigate();
+  const [versions, setVersions] = useState([]);
+  const [time, setTime] = useState({})
   const [searchParams, setSearchParams] = useSearchParams();
   const [packageDets, setPackageDets] = useState({});
-  const [dataLoaded, setDataLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("readme");
-  const fetchPackageDetails = async (packageName) => {
-    setDataLoaded(false);
+  const fetchPackageDetails = async (packageName, version) => {
+    setLoading(true);
     try {
       const information = await fetch(
-        ` https://registry.npmjs.org/${packageName}`
+        ` https://registry.npmjs.org/${packageName}/${version}`
       );
       const response = await information.json();
-     
+ 
       setPackageDets(response);
     } catch (error) {
       console.log(error);
     }
-    setDataLoaded(true);
+    setLoading(false);
   };
 
-  const calculateTime = (date) => {
-    let todayDate = new Date();
-    let packageDate = new Date(date);
+  const navigateToAnotherVersion = (version) => {
 
-    let differenceInDays = Math.floor(
-      (todayDate.getTime() - packageDate.getTime()) / (1000 * 24 * 60 * 60)
-    );
-    if (differenceInDays > 365) {
-      return `${
-        Math.floor(differenceInDays / 365) > 1
-          ? `${Math.floor(differenceInDays / 365)} years ago`
-          : "a year ago"
-      }`;
-    } else if (differenceInDays > 30) {
-      return `${
-        Math.floor(differenceInDays / 30) > 1
-          ? `${Math.floor(differenceInDays / 30)} months`
-          : "a month ago"
-      }`;
-    } else {
-      return differenceInDays > 1
-        ? `${differenceInDays} days ago`
-        : differenceInDays === 1
-        ? "a day ago"
-        : `${Math.floor(
-            (todayDate.getTime() - packageDate.getTime()) / (1000 * 60 * 60)
-          )} hours ago`;
-    }
-  };
-
-  const navigateToVersion = (version) => {
-    navigate(`v/${version}`);
   };
 
   const addParams = (activeTab) => {
@@ -67,36 +41,44 @@ function PackageDetails() {
   };
 
   useEffect(() => {
-    fetchPackageDetails(packageName);
-  }, []);
+    fetchPackageDetails(packageName, version);
+  }, [version]);
 
+  useEffect(() => {
+    const fetchPackage = async (packageName) => {
+      try {
+        const packageDetail = await fetch(
+          `https://registry.npmjs.org/${packageName}`
+        );
+        const response = await packageDetail.json();
+
+        const { versions, time } = response;
+        
+        setTime(time)
+        setVersions(Object.keys(versions));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchPackage(packageName);
+  }, [version]);
   useEffect(() => {
     addParams(activeTab);
   }, [activeTab]);
 
   return (
     <div className="sm:px-44 py-5 sm:py-16 antialiased">
-      {dataLoaded ? (
+      {!loading ? (
         <div className="flex flex-col gap-y-2 sm:gap-y-4">
           <h1 className="font-source-sans-pro px-5 sm:px-0 font-semibold text-[24px]">
             {packageDets.name}
           </h1>
           <p className="font-fira-mono text-[14px] px-5 sm:px-0 leading-normal">
-            <span
-              className="cursor-pointer hover:underline"
-              onClick={() =>
-                packageDets["dist-tags"] &&
-                navigateToVersion(packageDets["dist-tags"].latest)
-              }
-            >
-              {packageDets["dist-tags"] && packageDets["dist-tags"].latest}
-            </span>{" "}
-            • <span className="text-[#14865c]">Public</span> • Published{" "}
+            <span className="cursor-pointer hover:underline">{version}</span> •{" "}
+            <span className="text-[#14865c]">Public</span> • Published{" "}
             {packageDets["dist-tags"] &&
               packageDets.time &&
-              calculateTime(
-                packageDets.time[`${packageDets["dist-tags"].latest}`]
-              )}
+              calculateTime(packageDets.time[`${version}`])}
           </p>
 
           {/* active tabs */}
@@ -111,12 +93,8 @@ function PackageDetails() {
               Code
             </button>
             <button className="flex-1 py-3 rounded-sm px-16 font-fira-mono text-[14px] font-medium bg-[#c836c326] border-b-2 border-[#c836c3] text-[#00000080]">
-              {packageDets.versions[`${packageDets["dist-tags"].latest}`]
-                .dependencies
-                ? Object.keys(
-                    packageDets.versions[`${packageDets["dist-tags"].latest}`]
-                      .dependencies
-                  ).length
+              {packageDets.dependencies
+                ? Object.keys(packageDets.dependencies).length
                 : 0}{" "}
               Dependency
             </button>
@@ -127,8 +105,7 @@ function PackageDetails() {
               onClick={() => setActiveTab("version")}
               className="flex-1 py-3 rounded-sm px-10 font-fira-mono text-[14px] font-medium border-b-2 border-[#29abe2] bg-[#29abe226] text-[#29abe2]"
             >
-              {packageDets.versions && Object.keys(packageDets.versions).length}{" "}
-              Versions
+              {versions.length} Versions
             </button>
           </div>
 
@@ -139,8 +116,7 @@ function PackageDetails() {
               {activeTab === "readme" ? (
                 packageDets.readme ? (
                   <div
-                    className="w-full overflow-hidden"
-
+                    className="w-full"
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(packageDets.readme),
                     }}
@@ -154,21 +130,19 @@ function PackageDetails() {
                 <div className="w-full">
                   <h1>Version History</h1>
                   <div className="flex flex-col w-full">
-                    {Object.keys(packageDets.versions)
+                    {versions
                       .toReversed()
                       .map((elem, index) => {
                         return (
                           <div className="flex justify-between" key={index}>
                             <p
                               className="underline text-[#00000099] text-[16px] font-semibold cursor-pointer font-inconsolata"
-                              onClick={() => navigateToVersion(elem)}
+                              onClick={() => navigateToAnotherVersion(elem)}
                             >
                               {elem}
                             </p>
-                            
-                            
                             <p className="text-[#00000099] text-[16px] font-inconsolata">
-                              {calculateTime(packageDets.time[`${elem}`])}
+                              {calculateTime(time[`${elem}`])}
                             </p>
                           </div>
                         );
@@ -205,7 +179,7 @@ function PackageDetails() {
                       <rect y="7.5" width="1.9" height="1.9"></rect>
                     </g>
                   </svg>
-                  npm i {packageDets.name}
+                  npm i {packageName}@{version}
                 </div>
               </div>
               <div className="flex flex-col gap-y-1 py-5 border-b w-full sm:w-11/12 border-[#cccccc]">
@@ -218,7 +192,7 @@ function PackageDetails() {
                     : "- Url not received"}
                 </p>
               </div>
-              <div className="flex flex-col gap-y-1 py-5 border-b w-full sm:w-11/12 border-[#cccccc]">
+              <div className="flex flex-col gap-y-1 py-5 border-b w-11/12 border-[#cccccc]">
                 <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Homepage
                 </h1>
@@ -229,13 +203,13 @@ function PackageDetails() {
                 </p>
               </div>
               <div className="flex justify-between py-5 border-b w-full sm:w-11/12 border-[#cccccc]">
-                {packageDets["dist-tags"] && (
+                {packageDets.version && (
                   <div className="flex-1 flex flex-col gap-y-1">
                     <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                       Version
                     </h1>
                     <p className="font-source-sans-pro text-[18px] font-semibold">
-                      {packageDets["dist-tags"].latest}
+                      {version}
                     </p>
                   </div>
                 )}
@@ -250,6 +224,7 @@ function PackageDetails() {
                   </div>
                 )}
               </div>
+
               <div className="flex flex-col gap-y-1 py-5 w-full sm:w-11/12">
                 <h1 className="text-[16px] font-source-sans-pro font-bold text-[#757575]">
                   Collaborators
@@ -274,4 +249,4 @@ function PackageDetails() {
   );
 }
 
-export default PackageDetails;
+export default PackageVersionDetails;

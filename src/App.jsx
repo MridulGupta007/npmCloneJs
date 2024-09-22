@@ -4,7 +4,7 @@ import { ContextHolder } from "./Context/ContextHolder";
 import Navbar from "./Components/Navbar";
 
 import Footer from "./Components/Footer";
-import HomeLayout from "./Pages/HomeLayout";
+import HomeLayout from "./Pages//Home/HomeLayout";
 function App() {
   const [input, setInput] = useState("");
 
